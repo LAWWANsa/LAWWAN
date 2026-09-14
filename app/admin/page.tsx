@@ -1,0 +1,15 @@
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { SiteHeader } from '@/components/lawwan/header'
+
+export default async function AdminPage(){
+ const supabase=await createClient(); const {data:{user}}=await supabase.auth.getUser(); if(!user) redirect('/auth/login')
+ const {data:profile}=await supabase.from('profiles').select('full_name,role').eq('id',user.id).maybeSingle(); if(profile?.role!=='admin') redirect('/dashboard')
+ const [{data:kpi},{data:bookings},{data:apps}]=await Promise.all([
+  supabase.from('admin_dashboard_kpis').select('*').maybeSingle(),
+  supabase.from('admin_recent_bookings').select('*').limit(10),
+  supabase.from('admin_trainer_application_queue').select('*').eq('application_status','pending').limit(10),
+ ])
+ const n=(v:any)=>Number(v||0).toLocaleString('ar-SA');
+ return <div dir="rtl" className="min-h-svh bg-secondary/20"><SiteHeader userName={profile.full_name||'الإدارة'}/><main className="mx-auto max-w-7xl px-5 py-8 lg:px-8"><p className="text-sm font-bold text-primary">لَوَّان</p><h1 className="mt-1 text-3xl font-extrabold">لوحة الإدارة</h1><p className="mt-2 text-muted-foreground">نظرة سريعة على التشغيل والحجوزات والمدربين والمدفوعات.</p><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{[['المتدربون',kpi?.trainees],['المدربون النشطون',kpi?.active_trainers],['طلبات الحجز',kpi?.pending_bookings],['طلبات المدربين',kpi?.pending_trainer_applications],['مدفوعات معلقة',kpi?.pending_payments],['رسائل غير مقروءة',kpi?.unread_messages],['الإيرادات المدفوعة',`${n(kpi?.paid_revenue)} ر.س`],['عمولة المنصة',`${n(kpi?.platform_commission)} ر.س`]].map(([l,v])=><div key={String(l)} className="rounded-2xl border border-border bg-card p-5"><div className="text-2xl font-extrabold">{typeof v==='string'?v:n(v)}</div><div className="mt-1 text-sm text-muted-foreground">{l}</div></div>)}</div><div className="mt-8 grid gap-6 lg:grid-cols-2"><section className="rounded-2xl border border-border bg-card p-6"><h2 className="text-xl font-extrabold">آخر الحجوزات</h2><div className="mt-4 space-y-3">{(bookings||[]).map((b:any)=><div key={b.id} className="rounded-xl border p-4"><div className="font-bold">{b.service_name||'جلسة'} · {b.price} ر.س</div><div className="mt-1 text-sm text-muted-foreground">{b.trainee_name||'طالب'} مع {b.trainer_name||'مدرب'} · {b.status} · {b.payment_status}</div></div>)}{!bookings?.length&&<p className="py-8 text-center text-sm text-muted-foreground">لا توجد حجوزات.</p>}</div></section><section className="rounded-2xl border border-border bg-card p-6"><h2 className="text-xl font-extrabold">طلبات المدربين</h2><div className="mt-4 space-y-3">{(apps||[]).map((a:any)=><div key={a.id} className="rounded-xl border p-4"><div className="font-bold">{a.full_name||'متقدم'} · {a.specialization||'—'}</div><div className="mt-1 text-sm text-muted-foreground">{a.city||'—'} · {a.application_status}</div></div>)}{!apps?.length&&<p className="py-8 text-center text-sm text-muted-foreground">لا توجد طلبات معلقة.</p>}</div></section></div></main></div>
+}
