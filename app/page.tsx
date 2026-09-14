@@ -17,7 +17,7 @@ export default function Page() {
           <div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 lg:grid-cols-[1.15fr_.85fr] lg:items-center lg:px-8 lg:py-28">
             <div className="relative">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1.5 text-xs font-bold text-primary"><span className="size-1.5 rounded-full bg-primary" /> تعلّم مهارة تحبها</div>
-              <h1 className="max-w-3xl text-balance text-5xl font-extrabold leading-[1.15] tracking-tight sm:text-6xl">اكتشف مدرّبك.<br /><span className="text-primary">وابدأ لَوَّانك.</span></h1>
+              <h1 className="max-w-3xl text-balance text-5xl font-extrabold leading-[1.15] tracking-tight sm:text-6xl">ابحث عن مدرّبك.<br /><span className="text-primary">واكتشف لونك مع لَوَّان.</span></h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">منصة سعودية تجمعك بمدرّبين مختصين في الموسيقى والفنون. اختر مهارتك، شاهد المدربين، واحجز الجلسة المناسبة لك.</p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/trainers" className="inline-flex h-13 items-center justify-center gap-2 rounded-xl bg-primary px-6 font-bold text-primary-foreground shadow-lg shadow-primary/15">استكشف المدربين <ArrowLeft className="size-4" /></Link>
