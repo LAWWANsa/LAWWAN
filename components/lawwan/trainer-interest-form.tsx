@@ -29,22 +29,22 @@ export function TrainerInterestForm() {
     e.preventDefault(); setError(null)
     startTransition(async () => {
       const supabase = createClient()
-      const { error: insertError } = await supabase.from('trainer_interest_leads').insert({
-        full_name: form.fullName.trim(),
-        phone: form.phone.trim(),
-        email: form.email.trim() || null,
-        city: form.city.trim(),
-        specialty: form.specialty.trim(),
-        experience_years: form.experienceYears ? Number(form.experienceYears) : null,
-        training_mode: form.trainingMode,
-        expected_price: form.expectedPrice ? Number(form.expectedPrice) : null,
-        portfolio_url: form.portfolioUrl.trim() || null,
-        bio: form.bio.trim() || null,
+      const { error: submitError } = await supabase.rpc('submit_trainer_interest', {
+        p_full_name: form.fullName.trim(),
+        p_phone: form.phone.trim(),
+        p_city: form.city.trim(),
+        p_specialty: form.specialty.trim(),
+        p_email: form.email.trim() || null,
+        p_experience_years: form.experienceYears ? Number(form.experienceYears) : null,
+        p_training_mode: form.trainingMode,
+        p_expected_price: form.expectedPrice ? Number(form.expectedPrice) : null,
+        p_portfolio_url: form.portfolioUrl.trim() || null,
+        p_bio: form.bio.trim() || null,
       })
-      if (!insertError) setDone(true)
+      if (!submitError) setDone(true)
       else {
-        console.error('[lawwan] trainer interest error:', insertError)
-        setError('تعذّر تسجيل الطلب حالياً. تأكد من الاتصال بالإنترنت وحاول مرة أخرى.')
+        console.error('[lawwan] trainer interest RPC error:', submitError)
+        setError(submitError.message || 'تعذّر تسجيل الطلب حالياً. حاول مرة أخرى.')
       }
     })
   }
