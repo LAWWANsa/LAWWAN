@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react'
-import { submitTrainerInterest } from '@/app/validation/actions'
+import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -28,13 +28,24 @@ export function TrainerInterestForm() {
   function submit(e: React.FormEvent) {
     e.preventDefault(); setError(null)
     startTransition(async () => {
-      const result = await submitTrainerInterest({
-        ...form,
-        experienceYears: form.experienceYears ? Number(form.experienceYears) : undefined,
-        expectedPrice: form.expectedPrice ? Number(form.expectedPrice) : undefined,
+      const supabase = createClient()
+      const { error: insertError } = await supabase.from('trainer_interest_leads').insert({
+        full_name: form.fullName.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim() || null,
+        city: form.city.trim(),
+        specialty: form.specialty.trim(),
+        experience_years: form.experienceYears ? Number(form.experienceYears) : null,
+        training_mode: form.trainingMode,
+        expected_price: form.expectedPrice ? Number(form.expectedPrice) : null,
+        portfolio_url: form.portfolioUrl.trim() || null,
+        bio: form.bio.trim() || null,
       })
-      if (result.status === 'success') setDone(true)
-      else setError(result.message)
+      if (!insertError) setDone(true)
+      else {
+        console.error('[lawwan] trainer interest error:', insertError)
+        setError('تعذّر تسجيل الطلب حالياً. تأكد من الاتصال بالإنترنت وحاول مرة أخرى.')
+      }
     })
   }
 
