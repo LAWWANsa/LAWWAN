@@ -1,1 +1,0 @@
-Payment verification is intentionally server-side. Configure the Moyasar secret key in the deployment environment before enabling automatic reconciliation.
