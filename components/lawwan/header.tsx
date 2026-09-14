@@ -10,8 +10,8 @@ export function SiteHeader({ userName }: { userName?: string | null }) {
           <Link href="/" aria-label="لَوَّان" className="shrink-0"><Logo className="h-8" /></Link>
           <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
             <Link href="/trainers" className="text-muted-foreground transition hover:text-foreground">استكشف المدربين</Link>
-            <Link href="/" className="text-muted-foreground transition hover:text-foreground">كيف تعمل المنصة؟</Link>
-            <Link href="/trainer-dashboard" className="text-muted-foreground transition hover:text-foreground">لوحة المدرب</Link><Link href="/become-trainer" className="text-muted-foreground transition hover:text-foreground">انضم كمدرّب</Link>
+            <Link href="/how-it-works" className="text-muted-foreground transition hover:text-foreground">كيف تعمل المنصة؟</Link>
+            <Link href="/become-trainer" className="text-muted-foreground transition hover:text-foreground">انضم كمدرّب</Link>
           </nav>
         </div>
         <div className="flex items-center gap-2">

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowLeft, Check, Palette, Search, Star, Music2, Video, MapPin, ShieldCheck } from 'lucide-react'
 import { SiteHeader } from '@/components/lawwan/header'
+import { ValidationBanner } from '@/components/lawwan/validation-banner'
 import { categories, trainers } from '@/lib/lawwan-data'
 
 export default function Page() {
@@ -8,6 +9,7 @@ export default function Page() {
   return (
     <div className="min-h-svh bg-background">
       <SiteHeader />
+      <ValidationBanner />
       <main>
         <section className="relative overflow-hidden border-b border-border/60">
           <div className="absolute -right-32 -top-32 size-96 rounded-full bg-primary/10 blur-3xl" />
