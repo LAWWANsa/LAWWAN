@@ -14,13 +14,28 @@ const modes = [
   { value: 'both', label: 'حضوري وأونلاين' },
 ] as const
 
+const audiences = [
+  { value: 'male', label: 'ذكور' },
+  { value: 'female', label: 'إناث' },
+  { value: 'both', label: 'ذكور وإناث' },
+] as const
+
+const ageGroups = [
+  { value: 'adults', label: 'بالغين' },
+  { value: 'children', label: 'أطفال' },
+  { value: 'both', label: 'بالغين وأطفال' },
+] as const
+
 export function TrainerInterestForm() {
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
   const [form, setForm] = useState({
     fullName: '', phone: '', email: '', city: '', specialty: '', experienceYears: '',
-    trainingMode: 'both' as 'online' | 'in_person' | 'both', expectedPrice: '', portfolioUrl: '', bio: '',
+    trainingMode: 'both' as 'online' | 'in_person' | 'both',
+    targetAudience: 'both' as 'male' | 'female' | 'both',
+    targetAgeGroup: 'adults' as 'adults' | 'children' | 'both',
+    expectedPrice: '', portfolioUrl: '', bio: '', inquiries: '',
   })
 
   function update(key: string, value: string) { setForm((current) => ({ ...current, [key]: value })) }
@@ -58,7 +73,7 @@ export function TrainerInterestForm() {
         p_training_mode: form.trainingMode,
         p_expected_price: form.expectedPrice ? Number(form.expectedPrice) : null,
         p_portfolio_url: form.portfolioUrl.trim() || null,
-        p_bio: form.bio.trim() || null,
+        p_bio: [form.bio.trim(), form.inquiries.trim() ? `استفسارات أو اقتراحات: ${form.inquiries.trim()}` : ''].filter(Boolean).join('\n\n') || null,
       })
 
       if (submitError) throw submitError
@@ -93,7 +108,13 @@ export function TrainerInterestForm() {
       </div>
 
       <div className="space-y-2"><Label>طريقة تقديم الجلسات *</Label><div className="grid grid-cols-3 gap-2">{modes.map(mode => <button key={mode.value} type="button" onClick={() => setForm(current => ({ ...current, trainingMode: mode.value }))} className={`rounded-xl border px-3 py-3 text-sm font-bold transition ${form.trainingMode === mode.value ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-card hover:border-primary/30'}`}>{mode.label}</button>)}</div></div>
+
+      <div className="space-y-2"><Label>الفئة المستهدفة؟ *</Label><div className="grid grid-cols-3 gap-2">{audiences.map(option => <button key={option.value} type="button" onClick={() => setForm(current => ({ ...current, targetAudience: option.value }))} className={`rounded-xl border px-3 py-3 text-sm font-bold transition ${form.targetAudience === option.value ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-card hover:border-primary/30'}`}>{option.label}</button>)}</div></div>
+
+      <div className="space-y-2"><Label>الفئة العمرية المستهدفة؟ *</Label><div className="grid grid-cols-3 gap-2">{ageGroups.map(option => <button key={option.value} type="button" onClick={() => setForm(current => ({ ...current, targetAgeGroup: option.value }))} className={`rounded-xl border px-3 py-3 text-sm font-bold transition ${form.targetAgeGroup === option.value ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-card hover:border-primary/30'}`}>{option.label}</button>)}</div></div>
+
       <div className="space-y-2"><Label>نبذة قصيرة عن خبرتك</Label><Textarea value={form.bio} onChange={e => update('bio', e.target.value)} placeholder="عرّفنا بنفسك وما الذي تحب تعليمه..." className="min-h-28 rounded-xl" /></div>
+      <div className="space-y-2"><Label>استفسارات أو اقتراحات</Label><Textarea value={form.inquiries} onChange={e => update('inquiries', e.target.value)} placeholder="هل لديك استفسار أو اقتراح يساعدنا على تطوير لَوَّان؟" className="min-h-24 rounded-xl" /><p className="text-xs leading-5 text-muted-foreground">بنجيب على جميع استفساراتك، وبنحاول نوفر جميع الاقتراحات المناسبة لتجربة أفضل للمدربين والطلاب.</p></div>
       <div className="space-y-2"><Label>رابط Instagram أو معرض أعمالك</Label><Input type="url" value={form.portfolioUrl} onChange={e => update('portfolioUrl', e.target.value)} placeholder="https://..." dir="ltr" className="h-12 rounded-xl text-left" /></div>
 
       {error && <div role="alert" className="flex gap-2 rounded-xl border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive"><AlertCircle className="mt-0.5 size-4 shrink-0" />{error}</div>}
